@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "echo \"[$(date)] Landing Page Project - Session started\" >> logs/copilot-session.log",
+        "powershell": "Add-Content -Path logs/copilot-session.log -Value \"[$(Get-Date)] Landing Page Project - Session started\"",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "bash": "./scripts/log-prompt.sh",
+        "powershell": "./scripts/log-prompt.ps1",
+        "cwd": ".",
+        "env": {
+          "PROJECT_TYPE": "nextjs-landing-page"
+        },
+        "timeoutSec": 5
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/validate-tool-use.sh",
+        "powershell": "./scripts/validate-tool-use.ps1",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/log-tool-result.sh",
+        "powershell": "./scripts/log-tool-result.ps1",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "echo \"[$(date)] Session ended\" >> logs/copilot-session.log",
+        "powershell": "Add-Content -Path logs/copilot-session.log -Value \"[$(Get-Date)] Session ended\"",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

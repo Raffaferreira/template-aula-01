@@ -1,0 +1,537 @@
+name: 🚀 Azure Container Apps Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Ambiente de deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  AZURE_RESOURCE_GROUP: rg-webapp-prod
+  AZURE_CONTAINER_APP: ws-landing-prod
+  AZURE_REGISTRY: acracaminyouprod
+  AZURE_REGISTRY_URL: acracaminyouprod.azurecr.io
+  IMAGE_NAME: acaminyou-landing
+  DOCKER_FILE: Dockerfile.prod
+  
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════
+  # Job 0: Verificar se deve executar o deploy
+  # ═══════════════════════════════════════════════════════════════
+  check-deploy-flag:
+    name: 🔍 Verificar Flag de Deploy
+    runs-on: ubuntu-latest
+    outputs:
+      should-deploy: ${{ steps.check.outputs.should-deploy }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # Necessário para pegar a mensagem do commit
+      
+      - name: 🔍 Verificar mensagem do commit
+        id: check
+        run: |
+          # Obter mensagem do último commit
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Workflow manual sempre executa
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "✅ Deploy manual - executando workflow"
+            exit 0
+          fi
+          
+          # Obter apenas a primeira linha do commit (subject)
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          
+          echo "📝 Mensagem do commit:"
+          echo "${COMMIT_MSG}"
+          echo ""
+          
+          # Verificar se contém algum dos flags de deploy
+          if echo "${COMMIT_MSG}" | grep -qiE '\[deploy\]|\[azure\]|\[build\]'; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "✅ Flag de deploy encontrado - executando workflow"
+          else
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Nenhum flag de deploy encontrado - pulando workflow"
+            echo ""
+            echo "💡 Para executar o deploy, adicione um dos seguintes flags na mensagem do commit:"
+            echo "   - [deploy]  - Deploy padrão"
+            echo "   - [azure]   - Deploy no Azure"
+            echo "   - [build]   - Build e deploy"
+          fi
+
+  # ═══════════════════════════════════════════════════════════════
+  # Job 1: Build e Push da Imagem Docker
+  # ═══════════════════════════════════════════════════════════════
+  build-and-push:
+    name: 🔨 Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: check-deploy-flag
+    if: needs.check-deploy-flag.outputs.should-deploy == 'true'
+    outputs:
+      revision-number: ${{ steps.generate-revision.outputs.revision }}
+      image-tag: ${{ steps.generate-revision.outputs.tag }}
+      package-size: ${{ steps.image-info.outputs.size }}
+      build-time: ${{ steps.image-info.outputs.build-time }}
+      
+    steps:
+      # ─────────────────────────────────────────────────────────────
+      # 1. Checkout do código
+      # ─────────────────────────────────────────────────────────────
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Necessário para contar commits
+      
+      # ─────────────────────────────────────────────────────────────
+      # 2. Gerar número de revisão (formato: 0000XXX)
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔢 Generate Revision Number
+        id: generate-revision
+        run: |
+          # Conta o número de commits na branch atual
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          
+          # Formata como 7 dígitos (0000001, 0000002, etc.)
+          REVISION=$(printf "%07d" $COMMIT_COUNT)
+          
+          # SHA curto do commit
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          
+          # Tag da imagem: revision-sha (ex: 0000024-a1b2c3d)
+          IMAGE_TAG="${REVISION}-${SHORT_SHA}"
+          
+          echo "revision=${REVISION}" >> $GITHUB_OUTPUT
+          echo "tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "short-sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+          
+          echo "📦 Revisão gerada: ${REVISION}"
+          echo "🏷️ Tag da imagem: ${IMAGE_TAG}"
+      
+      # ─────────────────────────────────────────────────────────────
+      # 3. Login no Azure
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔐 Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      # ─────────────────────────────────────────────────────────────
+      # 4. Login no Azure Container Registry
+      # ─────────────────────────────────────────────────────────────
+      - name: 🐳 Login to Azure Container Registry
+        run: |
+          az acr login --name ${{ env.AZURE_REGISTRY }}
+          echo "✅ Login no ACR realizado com sucesso"
+      
+      # ─────────────────────────────────────────────────────────────
+      # 5. Setup Docker Buildx (para build otimizado)
+      # ─────────────────────────────────────────────────────────────
+      - name: 🏗️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      # ─────────────────────────────────────────────────────────────
+      # 6. Build e Push da imagem Docker
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔨 Build and Push Docker Image
+        id: docker-build
+        run: |
+          BUILD_START=$(date +%s)
+          
+          IMAGE_FULL_PATH="${{ env.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.generate-revision.outputs.tag }}"
+          IMAGE_LATEST="${{ env.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:latest"
+          
+          echo "🔨 Iniciando build da imagem..."
+          echo "📍 Path: ${IMAGE_FULL_PATH}"
+          
+          docker build \
+            -f ${{ env.DOCKER_FILE }} \
+            -t "${IMAGE_FULL_PATH}" \
+            -t "${IMAGE_LATEST}" \
+            --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg REVISION=${{ steps.generate-revision.outputs.revision }} \
+            --build-arg COMMIT_SHA=${{ steps.generate-revision.outputs.short-sha }} \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
+            .
+          
+          BUILD_END=$(date +%s)
+          BUILD_TIME=$((BUILD_END - BUILD_START))
+          
+          echo "build-time=${BUILD_TIME}" >> $GITHUB_OUTPUT
+          
+          echo "📤 Enviando imagem para ACR..."
+          docker push "${IMAGE_FULL_PATH}"
+          docker push "${IMAGE_LATEST}"
+          
+          echo "✅ Build concluído em ${BUILD_TIME}s"
+      
+      # ─────────────────────────────────────────────────────────────
+      # 7. Obter informações da imagem
+      # ─────────────────────────────────────────────────────────────
+      - name: 📊 Get Image Information
+        id: image-info
+        run: |
+          IMAGE_FULL_PATH="${{ env.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.generate-revision.outputs.tag }}"
+          
+          # Tamanho da imagem
+          SIZE_BYTES=$(docker image inspect "${IMAGE_FULL_PATH}" --format='{{.Size}}')
+          SIZE_MB=$(awk "BEGIN {printf \"%.2f\", ${SIZE_BYTES}/1024/1024}")
+          
+          echo "size=${SIZE_MB} MB" >> $GITHUB_OUTPUT
+          echo "build-time=${{ steps.docker-build.outputs.build-time }}s" >> $GITHUB_OUTPUT
+          
+          echo "📦 Tamanho da imagem: ${SIZE_MB} MB"
+          
+          # Informações adicionais
+          docker image inspect "${IMAGE_FULL_PATH}" --format='
+          📋 Informações da Imagem:
+          ├─ ID: {{.Id}}
+          ├─ Criada: {{.Created}}
+          ├─ Arquitetura: {{.Architecture}}
+          ├─ OS: {{.Os}}
+          └─ Layers: {{len .RootFS.Layers}}'
+
+  # ═══════════════════════════════════════════════════════════════
+  # Job 2: Deploy no Azure Container Apps
+  # ═══════════════════════════════════════════════════════════════
+  deploy:
+    name: 🚀 Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: [check-deploy-flag, build-and-push]
+    if: needs.check-deploy-flag.outputs.should-deploy == 'true'
+    outputs:
+      revision-name: ${{ steps.deploy.outputs.revision-name }}
+      app-url: ${{ steps.deploy.outputs.app-url }}
+      
+    steps:
+      # ─────────────────────────────────────────────────────────────
+      # 1. Login no Azure
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔐 Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      # ─────────────────────────────────────────────────────────────
+      # 1.5 Verificar Container App existe
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔍 Verify Container App Exists
+        run: |
+          echo "🔍 Verificando se Container App existe..."
+          echo "📦 App: ${{ env.AZURE_CONTAINER_APP }}"
+          echo "📂 Resource Group: ${{ env.AZURE_RESOURCE_GROUP }}"
+          
+          # Listar Container Apps no resource group
+          az containerapp list \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --query "[].{Name:name, ResourceGroup:resourceGroup}" \
+            --output table
+          
+          # Verificar se o app existe
+          if az containerapp show \
+            --name ${{ env.AZURE_CONTAINER_APP }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --output none 2>/dev/null; then
+            echo "✅ Container App encontrado!"
+          else
+            echo "❌ Container App não encontrado!"
+            exit 1
+          fi
+      
+      # ─────────────────────────────────────────────────────────────
+      # 2. Deploy no Container Apps
+      # ─────────────────────────────────────────────────────────────
+      - name: 🚀 Deploy to Azure Container Apps
+        id: deploy
+        run: |
+          IMAGE_PATH="${{ env.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }}"
+          REVISION_SUFFIX="rev-${{ needs.build-and-push.outputs.revision-number }}"
+          
+          echo "🚀 Iniciando deploy..."
+          echo "📍 Imagem: ${IMAGE_PATH}"
+          echo "📋 Revisão: ${REVISION_SUFFIX}"
+          
+          # Deploy com criação de nova revisão
+          DEPLOY_OUTPUT=$(az containerapp update \
+            --name ${{ env.AZURE_CONTAINER_APP }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --image "${IMAGE_PATH}" \
+            --revision-suffix "${REVISION_SUFFIX}" \
+            --output json)
+          
+          # Extrair informações do deploy
+          REVISION_NAME=$(echo "$DEPLOY_OUTPUT" | jq -r '.properties.latestRevisionName')
+          APP_FQDN=$(echo "$DEPLOY_OUTPUT" | jq -r '.properties.configuration.ingress.fqdn')
+          APP_URL="https://${APP_FQDN}"
+          
+          echo "revision-name=${REVISION_NAME}" >> $GITHUB_OUTPUT
+          echo "app-url=${APP_URL}" >> $GITHUB_OUTPUT
+          
+          echo "✅ Deploy concluído!"
+          echo "📝 Revisão: ${REVISION_NAME}"
+          echo "🌐 URL: ${APP_URL}"
+      
+      # ─────────────────────────────────────────────────────────────
+      # 3. Verificar status da revisão
+      # ─────────────────────────────────────────────────────────────
+      - name: 📊 Check Revision Status
+        run: |
+          REVISION_NAME="${{ steps.deploy.outputs.revision-name }}"
+          
+          echo "⏳ Aguardando ativação da revisão..."
+          
+          # Aguardar até 5 minutos pela ativação
+          for i in {1..30}; do
+            STATUS=$(az containerapp revision show \
+              --name ${{ env.AZURE_CONTAINER_APP }} \
+              --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+              --revision "${REVISION_NAME}" \
+              --query 'properties.provisioningState' \
+              --output tsv)
+            
+            echo "Status da revisão: ${STATUS}"
+            
+            if [ "$STATUS" == "Provisioned" ]; then
+              echo "✅ Revisão ativada com sucesso!"
+              
+              # Mostrar detalhes da revisão
+              az containerapp revision show \
+                --name ${{ env.AZURE_CONTAINER_APP }} \
+                --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+                --revision "${REVISION_NAME}" \
+                --query '{
+                  Revisao: name,
+                  Status: properties.provisioningState,
+                  Ativo: properties.active,
+                  TrafficWeight: properties.trafficWeight,
+                  Replicas: properties.replicas,
+                  CriadaEm: properties.createdTime
+                }' \
+                --output table
+              
+              break
+            elif [ "$STATUS" == "Failed" ]; then
+              echo "❌ Falha na ativação da revisão!"
+              exit 1
+            fi
+            
+            sleep 10
+          done
+          
+          if [ "$STATUS" != "Provisioned" ]; then
+            echo "⚠️ Timeout aguardando ativação da revisão"
+            exit 1
+          fi
+
+  # ═══════════════════════════════════════════════════════════════
+  # Job 3: Health Check e Validação
+  # ═══════════════════════════════════════════════════════════════
+  health-check:
+    name: 🏥 Health Check & Validation
+    runs-on: ubuntu-latest
+    needs: [check-deploy-flag, build-and-push, deploy]
+    if: needs.check-deploy-flag.outputs.should-deploy == 'true'
+    outputs:
+      http-code: ${{ steps.health-check.outputs.http-code }}
+      response-time: ${{ steps.health-check.outputs.response-time }}
+    
+    steps:
+      # ─────────────────────────────────────────────────────────────
+      # 1. Aguardar aplicação inicializar
+      # ─────────────────────────────────────────────────────────────
+      - name: ⏳ Wait for Application Startup
+        run: |
+          echo "⏳ Aguardando 30 segundos para inicialização..."
+          sleep 30
+      
+      # ─────────────────────────────────────────────────────────────
+      # 2. Health Check HTTP
+      # ─────────────────────────────────────────────────────────────
+      - name: 🏥 HTTP Health Check
+        id: health-check
+        run: |
+          APP_URL="${{ needs.deploy.outputs.app-url }}"
+          
+          echo "🏥 Executando health check..."
+          echo "🌐 URL: ${APP_URL}"
+          
+          # Realizar até 10 tentativas
+          SUCCESS=false
+          for i in {1..10}; do
+            echo "Tentativa ${i}/10..."
+            
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -L "${APP_URL}" --max-time 30)
+            RESPONSE_TIME=$(curl -s -o /dev/null -w "%{time_total}" -L "${APP_URL}" --max-time 30)
+            
+            echo "  └─ HTTP Code: ${HTTP_CODE}"
+            echo "  └─ Response Time: ${RESPONSE_TIME}s"
+            
+            if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+              SUCCESS=true
+              echo "http-code=${HTTP_CODE}" >> $GITHUB_OUTPUT
+              echo "response-time=${RESPONSE_TIME}" >> $GITHUB_OUTPUT
+              echo "✅ Health check OK!"
+              break
+            fi
+            
+            sleep 10
+          done
+          
+          if [ "$SUCCESS" = false ]; then
+            echo "❌ Health check falhou após 10 tentativas"
+            exit 1
+          fi
+      
+      # ─────────────────────────────────────────────────────────────
+      # 3. Verificar recursos críticos
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔍 Check Critical Resources
+        run: |
+          APP_URL="${{ needs.deploy.outputs.app-url }}"
+          
+          echo "🔍 Verificando recursos críticos..."
+          
+          # Lista de recursos para verificar
+          RESOURCES=(
+            "/"
+            "/favicon.ico"
+          )
+          
+          for RESOURCE in "${RESOURCES[@]}"; do
+            URL="${APP_URL}${RESOURCE}"
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -L "${URL}" --max-time 10)
+            
+            if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+              echo "✅ ${RESOURCE} - HTTP ${HTTP_CODE}"
+            else
+              echo "⚠️ ${RESOURCE} - HTTP ${HTTP_CODE}"
+            fi
+          done
+      
+      # ─────────────────────────────────────────────────────────────
+      # 4. Login no Azure e verificar logs
+      # ─────────────────────────────────────────────────────────────
+      - name: 🔐 Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: 📋 Check Container Logs
+        run: |
+          REVISION_NAME="${{ needs.deploy.outputs.revision-name }}"
+          
+          echo "📋 Últimas 20 linhas de log da revisão:"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          az containerapp logs show \
+            --name ${{ env.AZURE_CONTAINER_APP }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --revision "${REVISION_NAME}" \
+            --tail 20 \
+            --follow false \
+            || echo "⚠️ Logs ainda não disponíveis"
+
+  # ═══════════════════════════════════════════════════════════════
+  # Job 4: Resumo do Deploy
+  # ═══════════════════════════════════════════════════════════════
+  summary:
+    name: 📊 Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [check-deploy-flag, build-and-push, deploy, health-check]
+    if: always() && needs.check-deploy-flag.outputs.should-deploy == 'true'
+    
+    steps:
+      - name: 📊 Generate Deployment Summary
+        run: |
+          cat << EOF > $GITHUB_STEP_SUMMARY
+          # 🚀 Azure Container Apps Deploy - Resumo
+          
+          ## 📦 Informações da Build
+          
+          | Item | Valor |
+          |------|-------|
+          | **Revisão** | \`${{ needs.build-and-push.outputs.revision-number }}\` |
+          | **Tag da Imagem** | \`${{ needs.build-and-push.outputs.image-tag }}\` |
+          | **Tamanho do Pacote** | ${{ needs.build-and-push.outputs.package-size }} |
+          | **Tempo de Build** | ${{ needs.build-and-push.outputs.build-time }} |
+          | **Commit SHA** | \`${{ github.sha }}\` |
+          | **Branch** | \`${{ github.ref_name }}\` |
+          
+          ## 🚀 Informações do Deploy
+          
+          | Item | Valor |
+          |------|-------|
+          | **Revisão Azure** | \`${{ needs.deploy.outputs.revision-name }}\` |
+          | **URL da Aplicação** | ${{ needs.deploy.outputs.app-url }} |
+          | **Resource Group** | \`${{ env.AZURE_RESOURCE_GROUP }}\` |
+          | **Container App** | \`${{ env.AZURE_CONTAINER_APP }}\` |
+          
+          ## 🏥 Health Check
+          
+          | Item | Valor |
+          |------|-------|
+          | **Status** | ${{ needs.health-check.result == 'success' && '✅ Aprovado' || '❌ Falhou' }} |
+          | **HTTP Code** | \`${{ needs.health-check.outputs.http-code || 'N/A' }}\` |
+          | **Tempo de Resposta** | ${{ needs.health-check.outputs.response-time || 'N/A' }}s |
+          
+          ## 🔗 Links Úteis
+          
+          - 🌐 [Acessar Aplicação](${{ needs.deploy.outputs.app-url }})
+          - 📊 [Azure Portal - Container Apps](https://portal.azure.com/#@/resource/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }}/providers/Microsoft.App/containerApps/${{ env.AZURE_CONTAINER_APP }}/overview)
+          - 📋 [Logs da Revisão](https://portal.azure.com/#@/resource/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ env.AZURE_RESOURCE_GROUP }}/providers/Microsoft.App/containerApps/${{ env.AZURE_CONTAINER_APP }}/revisionManagement)
+          
+          ## 📝 Detalhes do Workflow
+          
+          - **Workflow Run**: [\#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - **Triggered by**: ${{ github.actor }}
+          - **Event**: ${{ github.event_name }}
+          - **Data/Hora**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          
+          ---
+          
+          EOF
+          
+          if [ "${{ needs.health-check.result }}" == "success" ]; then
+            echo "✅ Deploy concluído com sucesso!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Deploy concluído com problemas no health check" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      # ─────────────────────────────────────────────────────────────
+      # 5. Notificar no console
+      # ─────────────────────────────────────────────────────────────
+      - name: 📢 Console Notification
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🎉 DEPLOY FINALIZADO"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "📦 Revisão: ${{ needs.build-and-push.outputs.revision-number }}"
+          echo "🏷️ Tag: ${{ needs.build-and-push.outputs.image-tag }}"
+          echo "📊 Tamanho: ${{ needs.build-and-push.outputs.package-size }}"
+          echo "⏱️ Build: ${{ needs.build-and-push.outputs.build-time }}"
+          echo ""
+          echo "🚀 Revisão Azure: ${{ needs.deploy.outputs.revision-name }}"
+          echo "🌐 URL: ${{ needs.deploy.outputs.app-url }}"
+          echo ""
+          echo "🏥 Health Check: ${{ needs.health-check.result }}"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
