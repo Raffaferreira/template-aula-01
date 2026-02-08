@@ -31,11 +31,25 @@ export default function Home() {
                 e alcançando resultados extraordinários com nossa plataforma
               </p>
               <div className="d-flex gap-3 justify-content-center flex-wrap animate-fade-in-delay-2">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <button type="button" className="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg">
+                  <FaRocket className="me-2" />
+                  Começar Agora - É Grátis
+                </button>
+                <button type="button" className="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+=======
+=======
+>>>>>>> Stashed changes
                 <button className="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg">
                   <FaRocket className="me-2" />
                   Começar Agora - É Grátis
                 </button>
                 <button className="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                   Ver Demonstração
                 </button>
               </div>
@@ -274,12 +288,30 @@ export default function Home() {
                 com teste grátis de 14 dias - sem compromisso, sem cartão de crédito.
               </p>
               
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+              <form className="row g-3 justify-content-center mb-4" onSubmit={(e) => e.preventDefault()}>
+                <div className="col-md-5">
+                  <label htmlFor="email-input" className="visually-hidden">E-mail profissional</label>
+                  <input 
+                    id="email-input"
+                    type="email" 
+                    className="form-control form-control-lg" 
+                    placeholder="Seu melhor e-mail profissional"
+                    required
+=======
+=======
+>>>>>>> Stashed changes
               <form className="row g-3 justify-content-center mb-4">
                 <div className="col-md-5">
                   <input 
                     type="email" 
                     className="form-control form-control-lg" 
                     placeholder="Seu melhor e-mail profissional"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                   />
                 </div>
                 <div className="col-md-4">
@@ -318,50 +350,115 @@ export default function Home() {
                 Transformando negócios através de tecnologia inteligente e inovação constante.
               </p>
               <div className="d-flex gap-2 mt-3">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}} aria-label="Facebook">f</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}} aria-label="LinkedIn">in</a>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}} aria-label="Twitter">tw</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}} aria-label="Instagram">ig</a>
+=======
+=======
+>>>>>>> Stashed changes
                 <a href="#" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}}>f</a>
                 <a href="#" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}}>in</a>
                 <a href="#" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}}>tw</a>
                 <a href="#" className="btn btn-outline-primary btn-sm rounded-circle" style={{width: '40px', height: '40px'}}>ig</a>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </div>
             </div>
             
             <div className="col-md-2">
               <h6 className="fw-bold mb-3">Produto</h6>
               <ul className="list-unstyled">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <li className="mb-2"><a href="/recursos" className="text-muted text-decoration-none">Recursos</a></li>
+                <li className="mb-2"><a href="/precos" className="text-muted text-decoration-none">Preços</a></li>
+                <li className="mb-2"><a href="/integracoes" className="text-muted text-decoration-none">Integrações</a></li>
+                <li className="mb-2"><a href="/api" className="text-muted text-decoration-none">API</a></li>
+=======
+=======
+>>>>>>> Stashed changes
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Recursos</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Preços</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Integrações</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">API</a></li>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </ul>
             </div>
             
             <div className="col-md-2">
               <h6 className="fw-bold mb-3">Empresa</h6>
               <ul className="list-unstyled">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <li className="mb-2"><a href="/sobre" className="text-muted text-decoration-none">Sobre Nós</a></li>
+                <li className="mb-2"><a href="/carreiras" className="text-muted text-decoration-none">Carreiras</a></li>
+                <li className="mb-2"><a href="/blog" className="text-muted text-decoration-none">Blog</a></li>
+                <li className="mb-2"><a href="/contato" className="text-muted text-decoration-none">Contato</a></li>
+=======
+=======
+>>>>>>> Stashed changes
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Sobre Nós</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Carreiras</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Blog</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Contato</a></li>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </ul>
             </div>
             
             <div className="col-md-2">
               <h6 className="fw-bold mb-3">Suporte</h6>
               <ul className="list-unstyled">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <li className="mb-2"><a href="/ajuda" className="text-muted text-decoration-none">Central de Ajuda</a></li>
+                <li className="mb-2"><a href="/docs" className="text-muted text-decoration-none">Documentação</a></li>
+                <li className="mb-2"><a href="/status" className="text-muted text-decoration-none">Status</a></li>
+                <li className="mb-2"><a href="/faq" className="text-muted text-decoration-none">FAQ</a></li>
+=======
+=======
+>>>>>>> Stashed changes
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Central de Ajuda</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Documentação</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Status</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">FAQ</a></li>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </ul>
             </div>
             
             <div className="col-md-2">
               <h6 className="fw-bold mb-3">Legal</h6>
               <ul className="list-unstyled">
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                <li className="mb-2"><a href="/privacidade" className="text-muted text-decoration-none">Privacidade</a></li>
+                <li className="mb-2"><a href="/termos" className="text-muted text-decoration-none">Termos</a></li>
+                <li className="mb-2"><a href="/lgpd" className="text-muted text-decoration-none">LGPD</a></li>
+                <li className="mb-2"><a href="/cookies" className="text-muted text-decoration-none">Cookies</a></li>
+=======
+=======
+>>>>>>> Stashed changes
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Privacidade</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Termos</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">LGPD</a></li>
                 <li className="mb-2"><a href="#" className="text-muted text-decoration-none">Cookies</a></li>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
               </ul>
             </div>
           </div>

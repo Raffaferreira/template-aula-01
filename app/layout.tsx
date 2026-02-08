@@ -21,7 +21,15 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+=======
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+>>>>>>> Stashed changes
+=======
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+>>>>>>> Stashed changes
       </head>
       <body>
         {children}
