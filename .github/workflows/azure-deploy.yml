@@ -21,6 +21,8 @@ on:
           - staging
 
 env:
+  # ⚠️ WORKFLOW CONTROL: Defina como 'false' para desabilitar o workflow
+  WORKFLOW_ENABLED: false
   AZURE_RESOURCE_GROUP: rg-webapp-prod
   AZURE_CONTAINER_APP: ws-landing-prod
   AZURE_REGISTRY: acracaminyouprod
@@ -48,6 +50,15 @@ jobs:
       - name: 🔍 Verificar mensagem do commit
         id: check
         run: |
+          WORKFLOW_ENABLED="${{ env.WORKFLOW_ENABLED }}"
+          
+          # Verificar se workflow está habilitado
+          if [ "${WORKFLOW_ENABLED}" != "true" ]; then
+            echo "should-deploy=false" >> $GITHUB_OUTPUT
+            echo "⚠️ WORKFLOW DESABILITADO - Configure WORKFLOW_ENABLED=true para habilitar"
+            exit 0
+          fi
+          
           # Obter mensagem do último commit
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             # Workflow manual sempre executa
