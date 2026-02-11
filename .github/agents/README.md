@@ -89,7 +89,7 @@ Cada agent é um especialista em uma área específica (SEO, UI/UX, Testing, etc
 
 ---
 
-#### 5. **Testing Specialist** (`testing-agent.md`)
+#### 5. **Testing Specialist** (`testing.agent.md`)
 **Quando usar**: Criando testes E2E, unitários, configurando Playwright
 
 **Especialidades:**
@@ -104,7 +104,7 @@ Cada agent é um especialista em uma área específica (SEO, UI/UX, Testing, etc
 
 ---
 
-#### 6. **Performance Optimizer** (`performance-agent.md`)
+#### 6. **Performance Optimizer** (`performance.agent.md`)
 **Quando usar**: Otimizando carregamento, reduzindo bundle, melhorando Web Vitals
 
 **Especialidades:**
@@ -120,7 +120,7 @@ Cada agent é um especialista em uma área específica (SEO, UI/UX, Testing, etc
 
 ---
 
-#### 7. **A11y Specialist** (`a11y-agent.md`)
+#### 7. **A11y Specialist** (`a11y.agent.md`)
 **Quando usar**: Garantindo acessibilidade (WCAG 2.1 AA)
 
 **Especialidades:**
@@ -138,7 +138,7 @@ Cada agent é um especialista em uma área específica (SEO, UI/UX, Testing, etc
 
 ### 🛠️ **Agents de Infraestrutura**
 
-#### 8. **Infrastructure & DevOps** (`infrastructure-agent.md`)
+#### 8. **Infrastructure & DevOps** (`infrastructure.agent.md`)
 **Quando usar**: Configurando CI/CD, deploy, monitoramento
 
 **Especialidades:**

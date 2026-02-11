@@ -16,12 +16,12 @@
 │
 ├── ✅ AGENTS DE QUALIDADE (4)
 │   ├── code-reviewer.agent.md (3KB)          # Revisão multi-perspectiva
-│   ├── testing-agent.md (12KB) ⭐ NOVO       # Testes E2E, unit, integration
-│   ├── performance-agent.md (13KB) ⭐ NOVO   # Web Vitals, optimization
-│   └── a11y-agent.md (14KB) ⭐ NOVO          # WCAG 2.1 AA, accessibility
+│   ├── testing.agent.md (12KB) ⭐ NOVO       # Testes E2E, unit, integration
+│   ├── performance.agent.md (13KB) ⭐ NOVO   # Web Vitals, optimization
+│   └── a11y.agent.md (14KB) ⭐ NOVO          # WCAG 2.1 AA, accessibility
 │
 ├── 🛠️ AGENTS DE INFRAESTRUTURA (1)
-│   └── infrastructure-agent.md (15KB) ⭐ NOVO # CI/CD, deploy, monitoring
+│   └── infrastructure.agent.md (15KB) ⭐ NOVO # CI/CD, deploy, monitoring
 │
 └── 📚 AGENTS DE COORDENAÇÃO (3)
     ├── dev-coordinator.agent.md (9KB)        # Orquestrador de features
@@ -74,22 +74,22 @@ agent-seo.md                 → Search intent, meta tags, structure
 ### ✅ Code Quality (2 agents)
 ```
 code-reviewer.agent.md       → Multi-perspective review
-testing-agent.md ⭐          → E2E, unit, integration tests
+testing.agent.md ⭐          → E2E, unit, integration tests
 ```
 
 ### ⚡ Performance (1 agent)
 ```
-performance-agent.md ⭐      → Web Vitals, bundle optimization
+performance.agent.md ⭐      → Web Vitals, bundle optimization
 ```
 
 ### ♿ Acessibilidade (1 agent)
 ```
-a11y-agent.md ⭐             → WCAG 2.1 AA, keyboard, screen readers
+a11y.agent.md ⭐             → WCAG 2.1 AA, keyboard, screen readers
 ```
 
 ### 🚀 DevOps (1 agent)
 ```
-infrastructure-agent.md ⭐   → CI/CD, deploy, monitoring, rollback
+infrastructure.agent.md ⭐   → CI/CD, deploy, monitoring, rollback
 ```
 
 ### 🎭 Coordenação (3 agents)
