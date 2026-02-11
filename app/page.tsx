@@ -1,10 +1,13 @@
 'use client';
 
 import { FaRocket, FaShieldAlt, FaChartLine, FaUsers, FaStar, FaCheckCircle } from 'react-icons/fa';
+import Navbar from './components/Navbar';
 
 export default function Home() {
   return (
-    <main>
+    <>
+      <Navbar />
+      <main style={{ paddingTop: '76px' }}>
       {/* Hero Section com Vídeo */}
       <section className="hero-section position-relative overflow-hidden">
         <div className="video-background">
@@ -386,5 +389,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
+    </>
   );
 }

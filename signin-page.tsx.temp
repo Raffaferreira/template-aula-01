@@ -1,0 +1,166 @@
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+import { FaEnvelope, FaLock, FaRocket, FaGoogle, FaLinkedin, FaGithub } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+
+export default function SignIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Sign in:', { email, password });
+  };
+
+  return (
+    <>
+      <Navbar />
+      
+      <main className="min-vh-100 d-flex align-items-center bg-light" style={{ paddingTop: '80px' }}>
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-10 col-lg-8">
+              <div className="row g-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                {/* Left Side - Branding */}
+                <div className="col-lg-6 bg-gradient-primary text-white p-5 d-none d-lg-flex flex-column justify-content-center">
+                  <div className="mb-5">
+                    <FaRocket className="fs-1 mb-4" />
+                    <h2 className="display-6 fw-bold mb-3">
+                      Bem-vindo de Volta!
+                    </h2>
+                    <p className="lead mb-4">
+                      Acesse sua conta e continue transformando seus resultados em lucro real.
+                    </p>
+                  </div>
+                  
+                  <div className="mt-auto">
+                    <div className="d-flex gap-3 mb-3">
+                      <div className="d-flex align-items-center">
+                        <div className="bg-white bg-opacity-25 rounded-circle p-2 me-2">✓</div>
+                        <span className="small">15.000+ empresas</span>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <div className="bg-white bg-opacity-25 rounded-circle p-2 me-2">✓</div>
+                        <span className="small">98.7% satisfação</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side - Sign In Form */}
+                <div className="col-lg-6 p-5">
+                  <div className="mb-4">
+                    <h1 className="h3 fw-bold mb-2">Entrar na Conta</h1>
+                    <p className="text-muted">
+                      Não tem conta? <Link href="/signup" className="text-primary fw-semibold text-decoration-none">Criar conta grátis</Link>
+                    </p>
+                  </div>
+
+                  {/* Social Login */}
+                  <div className="d-grid gap-2 mb-4">
+                    <button type="button" className="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-center">
+                      <FaGoogle className="me-2" />
+                      Continuar com Google
+                    </button>
+                    <div className="row g-2">
+                      <div className="col-6">
+                        <button type="button" className="btn btn-outline-secondary py-2 w-100 d-flex align-items-center justify-content-center">
+                          <FaLinkedin className="me-2" />
+                          LinkedIn
+                        </button>
+                      </div>
+                      <div className="col-6">
+                        <button type="button" className="btn btn-outline-secondary py-2 w-100 d-flex align-items-center justify-content-center">
+                          <FaGithub className="me-2" />
+                          GitHub
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="position-relative mb-4">
+                    <hr />
+                    <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
+                      ou entre com e-mail
+                    </span>
+                  </div>
+
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                      <label htmlFor="email" className="form-label fw-semibold">
+                        E-mail
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-end-0">
+                          <FaEnvelope className="text-muted" />
+                        </span>
+                        <input
+                          type="email"
+                          className="form-control border-start-0 ps-0"
+                          id="email"
+                          placeholder="seu@email.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="password" className="form-label fw-semibold">
+                        Senha
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-end-0">
+                          <FaLock className="text-muted" />
+                        </span>
+                        <input
+                          type="password"
+                          className="form-control border-start-0 ps-0"
+                          id="password"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id="remember"
+                        />
+                        <label className="form-check-label small" htmlFor="remember">
+                          Lembrar de mim
+                        </label>
+                      </div>
+                      <Link href="/recuperar-senha" className="small text-primary text-decoration-none fw-semibold">
+                        Esqueceu a senha?
+                      </Link>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary w-100 py-3 fw-bold mb-3">
+                      Entrar
+                    </button>
+
+                    <p className="text-center text-muted small mb-0">
+                      Ao continuar, você concorda com nossos{' '}
+                      <Link href="/termos" className="text-decoration-none">Termos de Uso</Link>
+                      {' '}e{' '}
+                      <Link href="/privacidade" className="text-decoration-none">Política de Privacidade</Link>
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+}
