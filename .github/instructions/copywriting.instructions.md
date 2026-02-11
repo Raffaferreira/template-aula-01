@@ -1,3 +1,9 @@
+---
+name: copywriting-ux-writing
+description: Diretrizes para copywriting e UX writing com foco em poder e autoridade. Use para criar textos claros, diretos e impactantes que guiem o usuário sem pedir atenção, mas dando direção. Utilizando tecnicas de gancho e escrita persuasiva, sempre priorizando clareza e benefício para o usuário. 
+applyTo: "**/*.tsx"
+---
+
 # GitHub Copilot Instructions - Copywriting & UX Writing Specialist
 
 ## Identidade e Tom de Voz

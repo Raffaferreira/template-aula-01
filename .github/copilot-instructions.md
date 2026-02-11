@@ -31,15 +31,6 @@ React 18 + TypeScript with NextJS delivery route management system with Supabase
 
 ##  Critical Documentation (READ FIRST)
 
-Before making any changes, read these essential files:
-- **`./readers/44 - NOTAS_DESENVOLVIMENTO.md`** - Known issues, architectural decisions, development notes
-- **`./readers/43 - VALIDATION_LAYER_GUIDE.md`** - Complete validation architecture
-- **`./readers/36 - DATABASE_STRUCTURE.md`** - Database schema and relationships
-- **`./readers/3 - AUTHENTICATION_SYSTEM.md`** - Auth flow and security
-- **`./readers/8 - AUTHORIZATION_GUIDE.md`** - Permission system (RBAC)
-- **`./supabase/8 - AUTHORIZATION_GUIDE.md`** -SQl files for RLS policies from Supabase
-- **MCP Supabase Server** - Check server mcp setup, secrets, env vars, functions, database, storage, and auth settings.
-
 **Note**: All documentation, guide, examples and finished with extension *.md files in `readers/` follow chronological naming (`{number} - {NAME}.md`) where number 1 = oldest, 49 = newest. This provides visual history of documentation evolution. In doubt, check directory listing order for chronology `ls -v readers/` or `dir /o:n readers\` on Windows or see `.github/instructions/documentation.instructions.md`
 
 ##  Architecture Overview

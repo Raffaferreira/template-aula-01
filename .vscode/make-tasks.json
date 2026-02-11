@@ -1,0 +1,90 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Make: Notify Build Success",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X", "POST",
+        "${input:makeWebhookUrl}",
+        "-H", "Content-Type: application/json",
+        "-d", "{\"event\":\"build\",\"status\":\"success\",\"project\":\"template-aula-01\",\"timestamp\":\"${input:timestamp}\"}"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "Make: Notify Deploy",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X", "POST",
+        "${input:makeWebhookUrl}",
+        "-H", "Content-Type: application/json",
+        "-d", "{\"event\":\"deploy\",\"environment\":\"${input:environment}\",\"project\":\"template-aula-01\"}"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Make: Send Error Report",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X", "POST",
+        "${input:makeWebhookUrl}",
+        "-H", "Content-Type: application/json",
+        "-d", "{\"event\":\"error\",\"message\":\"${input:errorMessage}\",\"project\":\"template-aula-01\"}"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Make: Trigger Custom Scenario",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X", "POST",
+        "${input:makeWebhookUrl}",
+        "-H", "Content-Type: application/json",
+        "-d", "${input:customPayload}"
+      ],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "makeWebhookUrl",
+      "type": "promptString",
+      "description": "Make.com Webhook URL",
+      "default": "https://hook.make.com/YOUR_WEBHOOK_ID"
+    },
+    {
+      "id": "environment",
+      "type": "pickString",
+      "description": "Deploy Environment",
+      "options": ["development", "staging", "production"],
+      "default": "development"
+    },
+    {
+      "id": "errorMessage",
+      "type": "promptString",
+      "description": "Error Message"
+    },
+    {
+      "id": "customPayload",
+      "type": "promptString",
+      "description": "Custom JSON Payload"
+    },
+    {
+      "id": "timestamp",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "date +%s"
+      }
+    }
+  ]
+}

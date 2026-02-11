@@ -1,4 +1,13 @@
 {
+    // Habilita o uso de Agent Skills no VS Code
+    "chat.useAgentSkills": true,
+    
+    // Locais adicionais para buscar skills (opcional)
+    "chat.agentSkillsLocations": [
+        ".github/skills"
+    ],
+    
+    // Auto-aprovação de comandos específicos do terminal
     "chat.tools.terminal.autoApprove": {
         "/^cmd /c mkdir \"G:\\\\Documents\\\\template-aula-01\\.worktrees\\\\copilot-worktree-2026-02-08T19-29-36\\\\app\\\\components\" 2>\\$null; cmd /c mkdir \"G:\\\\Documents\\\\template-aula-01\\.worktrees\\\\copilot-worktree-2026-02-08T19-29-36\\\\app\\\\signin\" 2>\\$null; cmd /c mkdir \"G:\\\\Documents\\\\template-aula-01\\.worktrees\\\\copilot-worktree-2026-02-08T19-29-36\\\\app\\\\signup\" 2>\\$null; echo \"Directories created\"$/": {
             "approve": true,

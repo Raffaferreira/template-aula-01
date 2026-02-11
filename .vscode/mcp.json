@@ -1,0 +1,27 @@
+{
+	"servers": {
+		"supabase": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@supabase/mcp-server-supabase@latest",
+				"--project-ref=jjycyyxyxwvqssrdajte"
+			],
+			"env": {
+				"SUPABASE_ACCESS_TOKEN": "sbp_73f02ab324fa487f6909b4a23c56ded14665cde6"
+			}
+		},
+		"github": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-github"
+			],
+			"env": {
+				"GITHUB_PERSONAL_ACCESS_TOKEN": "8d966e58-82cd-46b7-9010-722bfb0d4e04"
+			}
+		}
+	}
+}

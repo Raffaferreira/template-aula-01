@@ -27,19 +27,19 @@ export default function Home() {
           <div className="row min-vh-100 align-items-center justify-content-center text-center">
             <div className="col-lg-10">
               <h1 className="display-3 fw-bold text-white mb-4 animate-fade-in">
-                Transforme Seus Resultados em <span className="text-gradient">Lucro Real</span>
+                Multiplique Seu Faturamento. <span className="text-gradient">Resultados Reais.</span>
               </h1>
               <p className="lead text-white mb-5 fs-4 animate-fade-in-delay">
-                Descubra como mais de <strong>15.000+ empresas</strong> estão economizando milhões 
-                e alcançando resultados extraordinários com nossa plataforma
+                <strong>15.000+ empresas</strong> já economizaram R$ 487 milhões. 
+                Tecnologia que transforma operação em lucro.
               </p>
               <div className="d-flex gap-3 justify-content-center flex-wrap animate-fade-in-delay-2">
                 <button type="button" className="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg">
                   <FaRocket className="me-2" />
-                  Começar Agora - É Grátis
+                  Testar Grátis por 14 Dias
                 </button>
                 <button type="button" className="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                  Ver Demonstração
+                  Agendar Consultoria
                 </button>
               </div>
               <p className="text-white-50 mt-3">
@@ -58,13 +58,13 @@ export default function Home() {
             <div className="col-md-3 col-6">
               <div className="stat-card p-4">
                 <h2 className="display-4 fw-bold text-primary mb-2">15.000+</h2>
-                <p className="mb-0 text-uppercase small fw-semibold">Empresas Beneficiadas</p>
+                <p className="mb-0 text-uppercase small fw-semibold">Empresas Ativas</p>
               </div>
             </div>
             <div className="col-md-3 col-6">
               <div className="stat-card p-4">
                 <h2 className="display-4 fw-bold text-success mb-2">98.7%</h2>
-                <p className="mb-0 text-uppercase small fw-semibold">Clientes Satisfeitos</p>
+                <p className="mb-0 text-uppercase small fw-semibold">Satisfação Comprovada</p>
               </div>
             </div>
             <div className="col-md-3 col-6">
@@ -88,7 +88,7 @@ export default function Home() {
         <div className="container text-center">
           <div className="row align-items-center">
             <div className="col-12">
-              <p className="text-muted mb-3 text-uppercase small fw-semibold">Empresas que confiam em nós</p>
+              <p className="text-muted mb-3 text-uppercase small fw-semibold">Quem já usa</p>
               <div className="d-flex justify-content-center align-items-center gap-5 flex-wrap opacity-75">
                 <div className="fs-3 fw-bold text-secondary">TechCorp</div>
                 <div className="fs-3 fw-bold text-secondary">InnovaSoft</div>
@@ -106,12 +106,12 @@ export default function Home() {
         <div className="container">
           <div className="row mb-5">
             <div className="col-lg-8 mx-auto text-center">
-              <span className="badge bg-primary mb-3 px-3 py-2">POR QUE ESCOLHER A GENTE?</span>
+              <span className="badge bg-primary mb-3 px-3 py-2">COMO FUNCIONA</span>
               <h2 className="display-5 fw-bold mb-3">
-                Não é Sorte. É <span className="text-primary">Estratégia Comprovada</span>
+                Três Pilares. <span className="text-primary">Resultados Garantidos.</span>
               </h2>
               <p className="lead text-muted">
-                Enquanto outros prometem, nós entregamos resultados mensuráveis que impactam diretamente no seu faturamento
+                Implementação em 48h. ROI positivo no primeiro mês. Sem burocracia.
               </p>
             </div>
           </div>
@@ -124,8 +124,7 @@ export default function Home() {
                 </div>
                 <h3 className="h4 fw-bold mb-3">Implementação Rápida</h3>
                 <p className="text-muted mb-3">
-                  Seu negócio operacional em menos de 48 horas. Sem burocracia, sem complicação. 
-                  Apenas resultados.
+                  Operacional em 48 horas. Treinamento incluso. Suporte dedicado desde o dia 1.
                 </p>
                 <ul className="list-unstyled">
                   <li className="mb-2"><FaCheckCircle className="text-success me-2" />Onboarding guiado</li>
@@ -142,7 +141,7 @@ export default function Home() {
                 </div>
                 <h3 className="h4 fw-bold mb-3">Segurança de Nível Empresarial</h3>
                 <p className="text-muted mb-3">
-                  Seus dados protegidos com a mesma tecnologia usada por bancos e fintechs líderes de mercado.
+                  Criptografia bancária. Conformidade LGPD. Backup automático a cada 6 horas.
                 </p>
                 <ul className="list-unstyled">
                   <li className="mb-2"><FaCheckCircle className="text-success me-2" />Criptografia 256-bit</li>
@@ -159,7 +158,7 @@ export default function Home() {
                 </div>
                 <h3 className="h4 fw-bold mb-3">Crescimento Previsível</h3>
                 <p className="text-muted mb-3">
-                  Analytics em tempo real que revelam oportunidades escondidas e otimizam cada centavo investido.
+                  Dashboard em tempo real. Relatórios automáticos. IA identifica economia de até 37%.
                 </p>
                 <ul className="list-unstyled">
                   <li className="mb-2"><FaCheckCircle className="text-success me-2" />Dashboard inteligente</li>
@@ -179,7 +178,7 @@ export default function Home() {
             <div className="col-lg-8 mx-auto text-center">
               <span className="badge bg-warning text-dark mb-3 px-3 py-2">DEPOIMENTOS REAIS</span>
               <h2 className="display-5 fw-bold mb-3">
-                Veja O Que Dizem Quem Já <span className="text-warning">Transformou o Negócio</span>
+                Quem Usa, <span className="text-warning">Aprova</span>
               </h2>
             </div>
           </div>
@@ -270,11 +269,11 @@ export default function Home() {
           <div className="row">
             <div className="col-lg-8 mx-auto text-center">
               <h2 className="display-4 fw-bold mb-4">
-                Pronto Para Multiplicar Seus Resultados?
+                Comece Hoje. Veja Resultados em 48 Horas.
               </h2>
               <p className="lead mb-5">
-                Junte-se a 15.000+ empresas que já estão na frente. Comece hoje mesmo 
-                com teste grátis de 14 dias - sem compromisso, sem cartão de crédito.
+                Teste grátis por 14 dias. Sem cartão de crédito. Sem permanência. 
+                Cancele quando quiser.
               </p>
               
               <form className="row g-3 justify-content-center mb-4" onSubmit={(e) => e.preventDefault()}>
@@ -284,14 +283,14 @@ export default function Home() {
                     id="email-input"
                     type="email" 
                     className="form-control form-control-lg" 
-                    placeholder="Seu melhor e-mail profissional"
+                    placeholder="seu@email.com"
                     required
                   />
                 </div>
                 <div className="col-md-4">
                   <button type="submit" className="btn btn-light btn-lg w-100 fw-bold">
                     <FaRocket className="me-2" />
-                    Quero Testar Grátis
+                    Começar Agora
                   </button>
                 </div>
               </form>
@@ -303,7 +302,7 @@ export default function Home() {
               </div>
 
               <div className="mt-5 pt-4 border-top border-white border-opacity-25">
-                <p className="mb-3 fw-semibold">Ainda tem dúvidas? Fale com um especialista:</p>
+                <p className="mb-3 fw-semibold">Fale com especialista agora:</p>
                 <a href="tel:+551140028922" className="btn btn-outline-light btn-lg">
                   <FaUsers className="me-2" />
                   (11) 4002-8922
