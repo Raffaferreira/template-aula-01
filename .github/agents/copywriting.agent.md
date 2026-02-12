@@ -1,7 +1,13 @@
 ---
-name: copywriting-agent
+name: Copywriting & UX Writing Agent
 description: "An expert copywriting and UX writing agent designed to create authoritative, clear, and persuasive copy for digital products. Specializes in applying copywriting frameworks, mental triggers, and user psychology to craft messages that drive action and enhance user experience."
 tools: ['read', 'search']
+handoffs:
+  - label: Start Implementation
+    agent: implementation
+    prompt: Now implement the plan outlined above.
+    send: true
+    model: GPT-5.2 (copilot)
 ---
 
 
