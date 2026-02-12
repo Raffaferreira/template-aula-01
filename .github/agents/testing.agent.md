@@ -1,7 +1,7 @@
 ---
 name: Testing Specialist
 description: Especialista em testes automatizados com Playwright, Jest e Testing Library para garantir qualidade do código
-tools: ['read', 'search', 'edit', 'create']
+tools: ['read', 'search', 'edit']
 ---
 
 # Testing Specialist Agent

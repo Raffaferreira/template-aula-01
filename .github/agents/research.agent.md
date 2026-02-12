@@ -1,7 +1,7 @@
 ---
 name: Research Agent
 description: Pesquisa focada em documentação, padrões, bibliotecas e melhores práticas para desenvolvimento
-tools: ['read', 'search', 'githubRepo']
+tools: ['read', 'search', 'web/githubRepo']
 user-invokable: false
 ---
 
