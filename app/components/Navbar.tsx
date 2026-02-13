@@ -1,11 +1,24 @@
+/**
+ * Navbar Component
+ * Barra de navegação responsiva com menu colapsável em mobile
+ * Suporta internacionalização (pt-BR, en-US, es-ES)
+ * 
+ * @component
+ * @example
+ * <Navbar />
+ */
+
 'use client';
 
 import Link from 'next/link';
 import { useState } from 'react';
 import { FaRocket, FaBars, FaTimes } from 'react-icons/fa';
+import { useLanguage } from '@/src/contexts/LanguageContext';
+import { NAVIGATION } from '@/src/constants/i18n/navigation';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -14,7 +27,7 @@ export default function Navbar() {
       <div className="container">
         <Link href="/" className="navbar-brand d-flex align-items-center fw-bold fs-4">
           <FaRocket className="me-2 text-primary" />
-          <span className="text-gradient">EmpresaPro</span>
+          <span className="text-gradient">{t(NAVIGATION.brandName)}</span>
         </Link>
 
         {/* Mobile Toggle Button */}
@@ -32,22 +45,22 @@ export default function Navbar() {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-2">
             <li className="nav-item">
               <Link href="/#features" className="nav-link" onClick={() => setIsOpen(false)}>
-                Recursos
+                {t(NAVIGATION.resources)}
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/#pricing" className="nav-link" onClick={() => setIsOpen(false)}>
-                Preços
+                {t(NAVIGATION.pricing)}
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/#testimonials" className="nav-link" onClick={() => setIsOpen(false)}>
-                Depoimentos
+                {t(NAVIGATION.testimonials)}
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/#faq" className="nav-link" onClick={() => setIsOpen(false)}>
-                FAQ
+                {t(NAVIGATION.faq)}
               </Link>
             </li>
             <li className="nav-item ms-lg-3">
@@ -56,7 +69,7 @@ export default function Navbar() {
                 className="btn btn-outline-light px-4"
                 onClick={() => setIsOpen(false)}
               >
-                Entrar
+                {t(NAVIGATION.login)}
               </Link>
             </li>
             <li className="nav-item">
@@ -65,7 +78,7 @@ export default function Navbar() {
                 className="btn btn-primary px-4"
                 onClick={() => setIsOpen(false)}
               >
-                Começar Grátis
+                {t(NAVIGATION.signup)}
               </Link>
             </li>
           </ul>
