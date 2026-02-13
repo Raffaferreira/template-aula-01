@@ -4,6 +4,7 @@
  * 
  * @module config/di-container
  * @created 2026-02-11
+ * @updated 2026-02-13
  */
 
 import 'reflect-metadata'; // OBRIGATÓRIO: Deve ser importado antes de qualquer uso de decorators
@@ -11,6 +12,13 @@ import { container } from 'tsyringe';
 
 // Importar repositories
 import { UserRepository } from '../repository/UserRepository';
+
+// Importar validators
+import { AuthValidator } from '../validators/AuthValidator';
+import { InputValidator } from '../validators/InputValidator';
+
+// Importar services
+import { AuthService } from '../services/AuthService';
 
 /**
  * Registra todas as dependências no container
@@ -25,13 +33,24 @@ import { UserRepository } from '../repository/UserRepository';
 export function setupDependencyInjection(): void {
   console.log('🏗️ [DI Container] Configurando Dependency Injection...');
 
-  // Registrar UserRepository como transient (nova instância a cada resolve)
+  // Registrar Repositories
   container.register(UserRepository, { useClass: UserRepository });
+
+  // Registrar Validators
+  container.register(AuthValidator, { useClass: AuthValidator });
+  container.register(InputValidator, { useClass: InputValidator });
+
+  // Registrar Services
+  container.register(AuthService, { useClass: AuthService });
 
   // Alternativa: Registrar como singleton (mesma instância sempre)
   // container.registerSingleton(UserRepository);
+  // container.registerSingleton(AuthService);
 
   console.log('✅ [DI Container] Dependências registradas com sucesso');
+  console.log('   📦 Repositories: UserRepository');
+  console.log('   🔍 Validators: AuthValidator, InputValidator');
+  console.log('   💼 Services: AuthService');
 }
 
 /**
@@ -47,3 +66,4 @@ export function clearDependencyInjection(): void {
  * Exportar container para uso direto quando necessário
  */
 export { container };
+
